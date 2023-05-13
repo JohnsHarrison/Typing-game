@@ -9,6 +9,8 @@ function App() {
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
   const [playing, setPlaying] = useState(false)
+  const [health,setHealth] = useState(100)
+  const [difficulty, setDifficulty] = useState("") 
 
   // Ref for the useEffect to execute once
   const shouldRun = useRef(true);
@@ -23,8 +25,15 @@ function App() {
 
   // Checks the keypress to the current indexed letter in current wored. If they do not match it prevents typing in the input.
   function checkLetter(event) {
+    if(playing === false){
+      event.preventDefault()
+    }
+
     if (event.key !== word[index]) {
       event.preventDefault();
+      if(health > 0){
+        setHealth(health - 10)
+      }
     }
   }
 
@@ -43,7 +52,7 @@ function App() {
       setIndex(0);
       setInputText("");
       getWord();
-      setTimer(timer + 5);
+      setTimer(()=> difficulty === "easy" ? timer + 5 : difficulty === "medium" ? timer + 3 : difficulty === "hard" ? timer + 1 : null);
       event.target.value = "";
     }
   }
@@ -55,7 +64,8 @@ function App() {
 
   //handles setting the timer and changes the state of playing
   function playGame(){
-    setTimer(5)
+    setTimer(()=> difficulty === "easy" ? 60 : difficulty === "medium" ? 30 : difficulty === "hard" ? 10 : null)
+    setHealth(100)
     setPlaying(true)
   }
 
@@ -73,18 +83,30 @@ function App() {
       countDown(timer);
     }, 1000);
 
-    if(timer === 0){
+    if(timer === 0 || health === 0){
       clearInterval(intervalId);
       setPlaying(false)
     }
     return () => clearInterval(intervalId);
     }
-    
-  }, [timer,playing]);
+
+    if(health === 0){
+      setPlaying(false)
+    }
+
+  }, [timer,playing,health]);
 
   return (
     <div className="App">
-      <h1>{timer}</h1>
+      <div style={{display:"flex",alignItems:"center"}}>
+        <h1>Difficulty</h1>
+        <button onClick={(()=>setDifficulty("easy"))}>easy</button>
+        <button onClick={(()=>setDifficulty("medium"))}>medium</button>
+        <button onClick={(()=>setDifficulty("hard"))}>hard</button>
+      </div>
+      <h1>Current difficulty {difficulty === "" ? "?" : difficulty}</h1>
+      <h1>current health {health}</h1>
+      <h1>timer: {timer}</h1>
       <h1>{word}</h1>
       <input
         type="text"
@@ -94,7 +116,7 @@ function App() {
         spellCheck="false"
       />
       <h1>{inputText}</h1>
-      <h1>{score}</h1>
+      <h1>score: {score}</h1>
       {
         timer === 0 || playing === false ? <button onClick={playGame}>Play</button> : null
       }
