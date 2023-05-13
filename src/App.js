@@ -7,7 +7,9 @@ function App() {
   const [inputText, setInputText] = useState("");
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(6);
+  const [timer, setTimer] = useState(0);
+  const [playing, setPlaying] = useState(false)
+
 
   const shouldRun = useRef(true);
 
@@ -46,18 +48,32 @@ function App() {
     setTimer(time - 1);
   }
 
+  function playGame(){
+    setTimer(5)
+    setPlaying(true)
+    console.log(playing)
+  }
+
   useEffect(() => {
     if (shouldRun.current) {
-      setInterval(setTimer(timer - 1), 1000);
       getWord();
       shouldRun.current = false;
     }
-
-    const intervalId = setInterval(() => {
+    while(playing === true){
+      const intervalId = setInterval(() => {
       countDown(timer);
     }, 1000);
+
+    if(timer === 0){
+      clearInterval(intervalId);
+      setPlaying(false)
+    }
     return () => clearInterval(intervalId);
-  }, [timer]);
+    }
+    console.log(playing)
+  
+    
+  }, [timer,playing]);
 
   return (
     <div className="App">
@@ -72,6 +88,9 @@ function App() {
       />
       <h1>{inputText}</h1>
       <h1>{score}</h1>
+      {
+        timer === 0 || playing === false ? <button onClick={playGame}>Play</button> : null
+      }
     </div>
   );
 }
