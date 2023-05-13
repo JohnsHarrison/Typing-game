@@ -10,9 +10,10 @@ function App() {
   const [timer, setTimer] = useState(0);
   const [playing, setPlaying] = useState(false)
 
-
+  // Ref for the useEffect to execute once
   const shouldRun = useRef(true);
 
+  // API call to get a random word
   async function getWord() {
     const response = await axios.get(
       "https://random-word-api.herokuapp.com/word"
@@ -20,12 +21,15 @@ function App() {
     setWord(response.data[0]);
   }
 
+  // Checks the keypress to the current indexed letter in current wored. If they do not match it prevents typing in the input.
   function checkLetter(event) {
     if (event.key !== word[index]) {
       event.preventDefault();
     }
   }
 
+  // handles text in the input and increases inex when the right letters are pressed.
+  // also handles when input matches the current word.
   function handleChange(event) {
     const wordArr = word.split("");
 
@@ -44,21 +48,26 @@ function App() {
     }
   }
 
+  // function for setInterval
   function countDown(time) {
     setTimer(time - 1);
   }
 
+  //handles setting the timer and changes the state of playing
   function playGame(){
     setTimer(5)
     setPlaying(true)
-    console.log(playing)
   }
 
+
   useEffect(() => {
+  // prevents getword from running twice when app mounts
     if (shouldRun.current) {
       getWord();
       shouldRun.current = false;
     }
+
+    // game timer 
     while(playing === true){
       const intervalId = setInterval(() => {
       countDown(timer);
@@ -70,8 +79,6 @@ function App() {
     }
     return () => clearInterval(intervalId);
     }
-    console.log(playing)
-  
     
   }, [timer,playing]);
 
