@@ -67,6 +67,7 @@ function App() {
     setTimer(()=> difficulty === "easy" ? 60 : difficulty === "medium" ? 30 : difficulty === "hard" ? 10 : null)
     setHealth(100)
     setPlaying(true)
+    setScore(0)
   }
 
 
@@ -98,28 +99,44 @@ function App() {
 
   return (
     <div className="App">
-      <div style={{display:"flex",alignItems:"center"}}>
-        <h1>Difficulty</h1>
-        <button onClick={(()=>setDifficulty("easy"))}>easy</button>
-        <button onClick={(()=>setDifficulty("medium"))}>medium</button>
-        <button onClick={(()=>setDifficulty("hard"))}>hard</button>
-      </div>
-      <h1>Current difficulty {difficulty === "" ? "?" : difficulty}</h1>
-      <h1>current health {health}</h1>
-      <h1>timer: {timer}</h1>
-      <h1>{word}</h1>
-      <input
-        type="text"
-        id="text"
-        onKeyDown={checkLetter}
-        onChange={handleChange}
-        spellCheck="false"
-      />
-      <h1>{inputText}</h1>
-      <h1>score: {score}</h1>
+      {/* buttons to select difficulty */}
       {
-        timer === 0 || playing === false ? <button onClick={playGame}>Play</button> : null
+        !playing ? <div style={{display:"flex",alignItems:"center"}}>
+                      <h1>Difficulty</h1>
+                      <button onClick={(()=>setDifficulty("easy"))}>easy</button>
+                      <button onClick={(()=>setDifficulty("medium"))}>medium</button>
+                      <button onClick={(()=>setDifficulty("hard"))}>hard</button>
+                    </div>: null
       }
+
+      {/* displays current selected difficulty */}
+      {
+        difficulty === ""  && playing === false ? null : <h1>Current difficulty {difficulty === "" ? "?" : difficulty}</h1>
+      }
+
+      {/* displays game */}
+      {
+        playing ? <div> 
+                    <h1>current health {health}</h1>
+                    <h1>timer: {timer}</h1>
+                    <h1>{word}</h1>
+                    <input
+                      onKeyDown={checkLetter}
+                      onChange={handleChange}
+                      spellCheck="false"
+                    />
+                    <h1>{inputText}</h1>
+                    <h1>score: {score}</h1>
+                    
+                  </div> : null
+      }
+
+      {/* displays play game button  */}
+      {
+        difficulty !== "" && playing === false ? <button onClick={playGame}>Play</button> : null
+      }
+      
+      
     </div>
   );
 }
