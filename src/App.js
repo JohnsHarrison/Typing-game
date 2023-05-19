@@ -101,39 +101,51 @@ function App() {
     <div className="App">
       {/* buttons to select difficulty */}
       {
-        !playing ? <div style={{display:"flex",alignItems:"center"}}>
+        !playing ? <div className="start-screen">
+                      <h1>Typing Game</h1>
                       <h1>Difficulty</h1>
-                      <button onClick={(()=>setDifficulty("easy"))}>easy</button>
-                      <button onClick={(()=>setDifficulty("medium"))}>medium</button>
-                      <button onClick={(()=>setDifficulty("hard"))}>hard</button>
+                      <div style={{display:"flex",alignContent:"center"}}> 
+                        <button onClick={(()=>setDifficulty("easy"))}>easy</button>
+                        <button onClick={(()=>setDifficulty("medium"))}>medium</button>
+                        <button onClick={(()=>setDifficulty("hard"))}>hard</button>
+                      </div>
+                      {/* display current selected difficulty */}
+                      {
+                        difficulty === ""  && playing === false ? null : <h1>Play on {difficulty}?</h1>
+                      }
+                      {/* display play game */}
+                      {
+                        difficulty !== "" && playing === false ? <button onClick={playGame}>Play</button> : null
+                      }
                     </div>: null
-      }
-
-      {/* displays current selected difficulty */}
-      {
-        difficulty === ""  && playing === false ? null : <h1>Current difficulty {difficulty === "" ? "?" : difficulty}</h1>
-      }
+      }      
 
       {/* displays game */}
       {
         playing ? <div> 
-                    <h1>current health {health}</h1>
-                    <h1>timer: {timer}</h1>
-                    <h1>{word}</h1>
-                    <input
-                      onKeyDown={checkLetter}
-                      onChange={handleChange}
-                      spellCheck="false"
-                    />
-                    <h1>{inputText}</h1>
-                    <h1>score: {score}</h1>
+                    <div style={{display:"flex",justifyContent:"space-between"}}> 
+                      <div>
+                        <h1>current health {health}</h1>
+                        <h1>timer: {timer}</h1>
+                      </div>
+                      <div>
+                        <h1>score: {score}</h1>
+                      </div>
+                    </div>
+                    {/* play area */}
+                    <div style={{textAlign:"center"}}>
+                      <p style={{fontSize:"48px",fontWeight:"bold"}}>{word}</p>
                     
+                      <h1>{inputText}</h1>
+                      <input
+                        onKeyDown={checkLetter}
+                        onChange={handleChange}
+                        spellCheck="false"
+                      />  
+                    </div>
+                    
+                
                   </div> : null
-      }
-
-      {/* displays play game button  */}
-      {
-        difficulty !== "" && playing === false ? <button onClick={playGame}>Play</button> : null
       }
       
       
